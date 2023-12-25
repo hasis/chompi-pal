@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div>
+        <div style="color: pink;">
             <h2>CHOMPI-PAL</h2>
         </div>
         <div class="selection-container">
