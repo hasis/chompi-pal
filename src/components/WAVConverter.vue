@@ -7,16 +7,16 @@
             <label>
                 Engine Selector:
                 <select v-model="selectedEngine">
-                    <option value="JAMMI">JAMMI</option>
-                    <option value="CUBBI">CUBBI</option>
+                    <option value="jammi">JAMMI</option>
+                    <option value="cubbi">CUBBI</option>
                 </select>
             </label>
             <label>
                 Bank Selector:
                 <select v-model="selectedBank">
-                    <option value="A">A - Purple</option>
-                    <option value="B">B - Gold</option>
-                    <option value="C">C - Teal Blue</option>
+                    <option value="a">A - Purple</option>
+                    <option value="b">B - Gold</option>
+                    <option value="c">C - Teal Blue</option>
                 </select>
             </label>
         </div>
@@ -44,8 +44,8 @@ import audiobufferToWav from 'audiobuffer-to-wav';
 
 export default {
     setup() {
-        const selectedEngine = ref('JAMMI');
-        const selectedBank = ref('A'); // Add this line
+        const selectedEngine = ref('jammi');
+        const selectedBank = ref('a'); // Add this line
         const fileSlots = ref(Array.from({ length: 14 }, () => ({ file: null, audioBuffer: null })));
         const slotWidth = 120;
         const slotHeight = 80;
@@ -94,10 +94,10 @@ export default {
                         const wavBuffer = await convertAudioBufferToWav(audioBuffer);
 
                         // Log the size of the processed data
-                        console.log(`Size of ${selectedEngine.value}_${i + 1}.wav: ${wavBuffer.length} bytes`);
+                        console.log(`Size of ${selectedEngine.value}_${selectedBank.value}${i + 1}.wav: ${wavBuffer.length} bytes`);
 
                         // Add the processed file to the zip
-                        zip.file(`${selectedEngine.value}_${i + 1}.wav`, wavBuffer);
+                        zip.file(`${selectedEngine.value}_${selectedBank.value}${i + 1}.wav`, wavBuffer);
                     } catch (error) {
                         console.error('Error processing file:', error);
                     }
