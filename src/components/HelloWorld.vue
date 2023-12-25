@@ -1,7 +1,5 @@
 <script setup>
 import { ref } from 'vue'
-import USBComponent from './../usbComponent.jsx'
-
 
 defineProps({
   msg: String,

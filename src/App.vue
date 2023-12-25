@@ -6,13 +6,10 @@
 </template>
 
 <script>
-import USBComponent from './components/USBComponent.vue';
 import WAVConverter from './components/WAVConverter.vue';
-
 
 export default {
   components: {
-    USBComponent,
     WAVConverter
   },
 };
