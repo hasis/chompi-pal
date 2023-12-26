@@ -33,6 +33,11 @@
             </div>
         </div>
         <button @click="processFiles">Process Files</button>
+       <footer style="color: white;">
+                <p>
+                   This is a community-maintained web app and is not affiliated with the CHOMPI team or product. But we encourage you to buy one and make some jams.
+                </p>
+            </footer>
     </div>
 </template>
 
@@ -127,18 +132,44 @@ export default {
         function convertToAudioBuffer(arrayBuffer) {
             return new Promise((resolve, reject) => {
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+                // Explicitly set the sample rate to 48000 Hz
+                const sampleRate = 48000;
+
                 audioContext.decodeAudioData(arrayBuffer, (decodedData) => {
                     resolve(decodedData);
                 }, (error) => {
                     reject(error);
+                }).then((decodedData) => {
+                    // Create a new AudioBuffer with the correct sample rate
+                    const offlineContext = new OfflineAudioContext(2, decodedData.length, sampleRate);
+                    const source = offlineContext.createBufferSource();
+                    source.buffer = decodedData;
+
+                    // Connect and start the source to render the audio at the desired sample rate
+                    source.connect(offlineContext.destination);
+                    source.start(0);
+                    offlineContext.startRendering().then((renderedBuffer) => {
+                        resolve(renderedBuffer);
+                    }).catch((error) => {
+                        reject(error);
+                    });
                 });
             });
         }
 
         async function convertAudioBufferToWav(audioBuffer) {
-            const wavBuffer = audiobufferToWav(audioBuffer);
-            return new Uint8Array(wavBuffer);
+            const options = {
+                float32: false, // Set to true for 32-bit float format, false for 16-bit integer format
+                stereo: true,   // Set to true for stereo, false for mono
+            };
+
+            return new Promise((resolve) => {
+                const wavBuffer = audiobufferToWav(audioBuffer, options);
+                resolve(new Uint8Array(wavBuffer));
+            });
         }
+
 
         function playPreview(index) {
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
