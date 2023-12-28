@@ -30,7 +30,9 @@
             @drop.prevent="handleFileDrop(index, $event)" @click="handleSlotClick(index)"
             :style="{ width: slotWidth + 'px', height: slotHeight + 'px' }">
             <div class="slot-content">
-                <button v-if="slot.audioBuffer" @click.stop="playPreview(index)">PLAY</button>
+                <button v-if="slot.audioBuffer" @click.stop="playPreview(index)" class="play-button">
+      ▶
+    </button>
                 <input type="file" @change="handleFileSelect(index, $event)" accept=".wav" style="display: none" />
                 <label v-if="!slot.audioBuffer && !slot.file">{{ 'Select or drag a file' }}</label>
                 <label v-if="!slot.audioBuffer && slot.file">{{ shortenFileName(slot.file.name) }}</label>
@@ -283,7 +285,13 @@ export default {
 
 button {
     margin-top: 5px;
-    width: 100%;
+    width: 50%;
+}
+
+.play-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .custom-file-label {
