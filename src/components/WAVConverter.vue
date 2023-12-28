@@ -40,10 +40,12 @@
                 </div>
             </div>
         </div>
-        <label>
-            Normalize:
-            <input type="checkbox" v-model="normalize" />
-        </label>
+        <div class="normalize">
+            <label>
+                Normalize <em>(-6db)</em>:
+                <input type="checkbox" v-model="normalize" />
+            </label>
+        </div>
         <button @click="processFiles">Process Files</button>
         <footer style="color: white; padding-top: 5px">
             <hr />
@@ -356,6 +358,10 @@ button {
     justify-content: center;
     gap: 10px;
     margin-bottom: 10px;
+}
+
+.normalize {
+    padding: 10px;
 }
 </style>
 
