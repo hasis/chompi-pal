@@ -4,10 +4,10 @@
             <h1>CHOMPI-PAL</h1>
         </div>
         <div style="color: black;">
-            
-            <small>Drag and drop or upload your samples, audition from within, and when you're set, click process to get a zip of CHOMPI-friendly samples.</small>
+            <small>Drag and drop or upload your samples, audition from within, and when you're set, click process to get a
+                zip of CHOMPI-friendly samples.</small>
         </div>
-        <hr/>
+        <hr />
         <div class="selection-container">
             <label>
                 Engine Selector:
@@ -27,27 +27,32 @@
         </div>
         <div class="file-slots-container">
             <div class="file-slot" v-for="(slot, index) in fileSlots" :key="index" @dragover.prevent="handleDragOver"
-            @drop.prevent="handleFileDrop(index, $event)" @click="handleSlotClick(index)"
-            :style="{ width: slotWidth + 'px', height: slotHeight + 'px' }">
-            <div class="slot-content">
-                <button v-if="slot.audioBuffer" @click.stop="playPreview(index)" class="play-button">
-      ▶
-    </button>
-                <input type="file" @change="handleFileSelect(index, $event)" accept=".wav" style="display: none" />
-                <label v-if="!slot.audioBuffer && !slot.file">{{ 'Select or drag a file' }}</label>
-                <label v-if="!slot.audioBuffer && slot.file">{{ shortenFileName(slot.file.name) }}</label>
-                <div class="slot-number">{{ selectedEngine + '_' + selectedBank + (index + 1) }}</div>
+                @drop.prevent="handleFileDrop(index, $event)" @click="handleSlotClick(index)"
+                :style="{ width: slotWidth + 'px', height: slotHeight + 'px' }">
+                <div class="slot-content">
+                    <button v-if="slot.audioBuffer" @click.stop="playPreview(index)" class="play-button">
+                        ▶
+                    </button>
+                    <input type="file" @change="handleFileSelect(index, $event)" accept=".wav" style="display: none" />
+                    <label v-if="!slot.audioBuffer && !slot.file">{{ 'Select or drag a file' }}</label>
+                    <label v-if="!slot.audioBuffer && slot.file">{{ shortenFileName(slot.file.name) }}</label>
+                    <div class="slot-number">{{ selectedEngine + '_' + selectedBank + (index + 1) }}</div>
+                </div>
             </div>
         </div>
-        </div>
+        <label>
+            Normalize:
+            <input type="checkbox" v-model="normalize" />
+        </label>
         <button @click="processFiles">Process Files</button>
-       <footer style="color: white; padding-top: 5px">
-        <hr/>
-                <em>
-                   This is a community-maintained web app and is not affiliated with the CHOMPI team or product. But we encourage you to buy one and make some jams.
-                </em>
-            </footer>
-    </div>
+        <footer style="color: white; padding-top: 5px">
+            <hr />
+            <em>
+                This is a community-maintained web app and is not affiliated with the CHOMPI team or product. But we
+                encourage you to buy one and make some jams.
+            </em>
+    </footer>
+</div>
 </template>
 
 <script>
@@ -59,11 +64,81 @@ import audiobufferToWav from 'audiobuffer-to-wav';
 export default {
     setup() {
         const selectedEngine = ref('jammi');
-        const selectedBank = ref('a'); // Add this line
+        const selectedBank = ref('a');
         const fileSlots = ref(Array.from({ length: 14 }, () => ({ file: null, audioBuffer: null })));
         const slotWidth = 120;
         const slotHeight = 80;
         const playingSlots = ref([]);
+        const normalize = ref(false);
+
+        async function normalizeAudioBuffer(audioBuffer) {
+            const targetDb = -6;
+
+            // Calculate the current peak amplitude of the audio buffer
+            const currentDb = calculatePeakAmplitudeDb(audioBuffer);
+
+            // Calculate the gain needed to achieve the target dB level
+            const gain = calculateGain(targetDb, currentDb);
+
+            // Apply the gain to normalize the audio buffer with the target sample rate of 48000 Hz
+            const targetSampleRate = 48000;
+            const normalizedBuffer = applyGain(audioBuffer, gain, targetSampleRate);
+
+            return normalizedBuffer;
+        }
+
+        function calculatePeakAmplitudeDb(audioBuffer) {
+            let peakAmplitude = 0;
+
+            for (let channel = 0; channel < audioBuffer.numberOfChannels; channel++) {
+                const data = audioBuffer.getChannelData(channel);
+
+                for (let i = 0; i < data.length; i++) {
+                    const absSample = Math.abs(data[i]);
+                    if (absSample > peakAmplitude) {
+                        peakAmplitude = absSample;
+                    }
+                }
+            }
+
+            // Convert the peak amplitude to dB
+            return 20 * Math.log10(peakAmplitude);
+        }
+
+        function calculateGain(targetDb, currentDb) {
+            return Math.pow(10, (targetDb - currentDb) / 20);
+        }
+
+        function applyGain(audioBuffer, gain, targetSampleRate) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const numberOfChannels = audioBuffer.numberOfChannels;
+            const length = audioBuffer.length;
+            const newBuffer = audioContext.createBuffer(numberOfChannels, length, targetSampleRate);
+
+            for (let channel = 0; channel < numberOfChannels; channel++) {
+                const oldData = audioBuffer.getChannelData(channel);
+                const newData = newBuffer.getChannelData(channel);
+
+                for (let i = 0; i < length; i++) {
+                    newData[i] = oldData[i] * gain;
+                }
+            }
+
+            return newBuffer;
+        }
+
+
+        async function convertAudioBufferToWav(audioBuffer) {
+            const options = {
+                float32: false,
+                stereo: true,
+            };
+
+            return new Promise((resolve) => {
+                const wavBuffer = audiobufferToWav(audioBuffer, options);
+                resolve(new Uint8Array(wavBuffer));
+            });
+        }
 
         function handleFileSelect(index, event) {
             const fileInput = event.target;
@@ -82,7 +157,6 @@ export default {
 
         function updateSlotFile(index, file) {
             if (file) {
-                // Convert arrayBuffer to AudioBuffer and update the audioBuffer in fileSlots
                 readFile(file)
                     .then((arrayBuffer) => convertToAudioBuffer(arrayBuffer))
                     .then((audioBuffer) => {
@@ -104,13 +178,11 @@ export default {
 
                 if (file && audioBuffer) {
                     try {
-                        // Convert AudioBuffer to WAV format
-                        const wavBuffer = await convertAudioBufferToWav(audioBuffer);
+                        const normalizedAudioBuffer = normalize.value ? await normalizeAudioBuffer(audioBuffer) : audioBuffer;
+                        const wavBuffer = await convertAudioBufferToWav(normalizedAudioBuffer);
 
-                        // Log the size of the processed data
                         console.log(`Size of ${selectedEngine.value}_${selectedBank.value}${i + 1}.wav: ${wavBuffer.length} bytes`);
 
-                        // Add the processed file to the zip
                         zip.file(`${selectedEngine.value}_${selectedBank.value}${i + 1}.wav`, wavBuffer);
                     } catch (error) {
                         console.error('Error processing file:', error);
@@ -120,10 +192,8 @@ export default {
                 }
             }
 
-            // Generate the zip file
             zip.generateAsync({ type: 'blob' })
                 .then((blob) => {
-                    // Save or process the zip file as needed
                     console.log('Zip file size:', blob.size, 'bytes');
                     saveAs(blob, 'processed_files.zip');
                 });
@@ -141,8 +211,6 @@ export default {
         function convertToAudioBuffer(arrayBuffer) {
             return new Promise((resolve, reject) => {
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
-                // Explicitly set the sample rate to 48000 Hz
                 const sampleRate = 48000;
 
                 audioContext.decodeAudioData(arrayBuffer, (decodedData) => {
@@ -150,12 +218,10 @@ export default {
                 }, (error) => {
                     reject(error);
                 }).then((decodedData) => {
-                    // Create a new AudioBuffer with the correct sample rate
                     const offlineContext = new OfflineAudioContext(2, decodedData.length, sampleRate);
                     const source = offlineContext.createBufferSource();
                     source.buffer = decodedData;
 
-                    // Connect and start the source to render the audio at the desired sample rate
                     source.connect(offlineContext.destination);
                     source.start(0);
                     offlineContext.startRendering().then((renderedBuffer) => {
@@ -167,34 +233,18 @@ export default {
             });
         }
 
-        async function convertAudioBufferToWav(audioBuffer) {
-            const options = {
-                float32: false, // Set to true for 32-bit float format, false for 16-bit integer format
-                stereo: true,   // Set to true for stereo, false for mono
-            };
-
-            return new Promise((resolve) => {
-                const wavBuffer = audiobufferToWav(audioBuffer, options);
-                resolve(new Uint8Array(wavBuffer));
-            });
-        }
-
-
         function playPreview(index) {
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
             const source = audioContext.createBufferSource();
             const audioBuffer = fileSlots.value[index].audioBuffer;
 
-            // Stop any currently playing sources
             playingSlots.value.forEach((source) => source.stop());
 
-            // Create a new source
             const newSource = audioContext.createBufferSource();
             newSource.buffer = audioBuffer;
             newSource.connect(audioContext.destination);
             newSource.start();
 
-            // Save the new source to stop later
             playingSlots.value = [newSource];
         }
 
@@ -210,8 +260,6 @@ export default {
         }
 
         function shortenFileName(fileName) {
-            // Implement your file name shortening logic here
-            // For now, just return the original file name
             return fileName;
         }
 
@@ -222,6 +270,7 @@ export default {
             slotWidth,
             slotHeight,
             playingSlots,
+            normalize,
             handleSlotClick,
             handleFileSelect,
             handleDragOver,
