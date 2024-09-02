@@ -22,6 +22,8 @@
                     <option value="a">A - Purple</option>
                     <option value="b">B - Gold</option>
                     <option value="c">C - Teal Blue</option>
+                    <option value="d">D - Dark Orange</option>
+                    <option value="e">E - Yellow-Green</option>
                 </select>
             </label>
         </div>
