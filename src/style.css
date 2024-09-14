@@ -1,12 +1,17 @@
+@import url('https://fonts.googleapis.com/css?family=Nunito:200,300,400,500,900');
 /* src/style.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+
+#app {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+}
+
 :root {
   line-height: 1.5;
-  font-size: 0.85em;
-  font-weight:3400;
   color-scheme: light dark;
   background-color: #242424;
   font-synthesis: none;
@@ -102,7 +107,7 @@ select {
   display: flex;
   justify-content: center;
   gap: 10px;
-  margin-bottom: 10px;
+  margin: 1em;
 }
 
 .normalize {
@@ -136,10 +141,20 @@ body {
   background: linear-gradient(to bottom, #6f019c, #f3c309, #009688);
   margin: 0;
   overflow: hidden;
+  min-width: 320px;
+  min-height: 100vh;
 }
 
 .dark body {
   background: linear-gradient(to bottom, #18131a, #383838f6, #000000);
+}
+
+.header-text {
+  color: black
+}
+
+.dark .header-text {
+  color: white
 }
 
 #crt:before {

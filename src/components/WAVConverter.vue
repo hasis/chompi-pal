@@ -1,10 +1,7 @@
 <template>
     <div>
-        <div style="color: pink;">
-            <h1>CHOMPI-PAL</h1>
-        </div>
-        <div style="color: black;">
-            <small>Drag and drop or upload your samples, audition from within, and when you're set, click process to get
+        <div style="color: black; marginBottom: 1em">
+            <small>Drag and drop or upload your samples, audition from within, and when you're set, click the big 'MAKE MY FILES' button to get
                 a
                 zip of CHOMPI-friendly samples.</small>
         </div>
@@ -37,7 +34,7 @@
                         ▶
                     </button>
                     <input type="file" @change="handleFileSelect(index, $event)" accept=".wav" style="display: none" />
-                    <label v-if="!slot.audioBuffer && !slot.file">{{ 'Select or drag a file' }}</label>
+                    <label v-if="!slot.audioBuffer && !slot.file">{{ 'SELECT OR DRAG A FILE' }}</label>
                     <label v-if="!slot.audioBuffer && slot.file">{{ shortenFileName(slot.file.name) }}</label>
                     <div class="slot-number">{{ selectedEngine + '_' + selectedBank + (index + 1) }}</div>
                 </div>
@@ -49,15 +46,15 @@
                 <input type="checkbox" v-model="normalize" />
             </label>
         </div>
-        <button @click="processFiles" class="px-4 py-2 text-white bg-green-700 rounded dark:bg-slate-800"        
-        >Process Files</button>
-        <footer style=" color: white; padding-top: 5px">
+        <button @click="processFiles" class="px-4 py-2 text-white bg-green-700 rounded dark:bg-slate-800">MAKE MY
+            FILES</button>
+        <footer style=" color: white; padding-top: 50px">
             <hr />
             <em>
                 This is a community-maintained web app and is not affiliated with the CHOMPI team or product. But we
                 encourage you to buy one and make some jams.
             </em>
-            </footer>
+        </footer>
     </div>
 </template>
 

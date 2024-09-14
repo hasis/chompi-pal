@@ -1,11 +1,11 @@
 <!-- App.vue -->
 <template>
-  <div id="app" class="font-sans">
+  <div id="app">
     <div id="monitor">
       <div id="crt" class="off" onClick="handleClick(event)">
         <!-- slowly moving scanline -->
         <div class="scanline"></div>
-        <div class="font-sans">This is using the Inter font.</div>
+        <Header />
         <DarkMode />
         <WAVConverter />
       </div>
@@ -16,11 +16,12 @@
 <script>
 import WAVConverter from './components/WAVConverter.vue';
 import DarkMode from './components/DarkMode.vue'
+import Header from './components/Header.vue'
 
 export default {
   components: {
     WAVConverter,
-    DarkMode
+    Header
   },
 };
 </script>
