@@ -4,7 +4,8 @@
             <h1>CHOMPI-PAL</h1>
         </div>
         <div style="color: black;">
-            <small>Drag and drop or upload your samples, audition from within, and when you're set, click process to get a
+            <small>Drag and drop or upload your samples, audition from within, and when you're set, click process to get
+                a
                 zip of CHOMPI-friendly samples.</small>
         </div>
         <hr />
@@ -48,15 +49,16 @@
                 <input type="checkbox" v-model="normalize" />
             </label>
         </div>
-        <button @click="processFiles">Process Files</button>
-        <footer style="color: white; padding-top: 5px">
+        <button @click="processFiles" class="px-4 py-2 text-white bg-green-700 rounded dark:bg-slate-800"        
+        >Process Files</button>
+        <footer style=" color: white; padding-top: 5px">
             <hr />
             <em>
                 This is a community-maintained web app and is not affiliated with the CHOMPI team or product. But we
                 encourage you to buy one and make some jams.
             </em>
-    </footer>
-</div>
+            </footer>
+    </div>
 </template>
 
 <script>
@@ -286,84 +288,4 @@ export default {
     },
 };
 </script>
-
-
-<style scoped>
-
-.file-slots-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    overflow-x: auto;
-    justify-content: center;
-}
-
-.file-slot {
-    width: 120px;
-    height: 80px;
-    margin-bottom: 10px;
-    border: 2px solid #ccc;
-    border-radius: 10px;
-    /* Add rounded borders */
-    box-sizing: border-box;
-}
-
-.slot-number {
-    margin-top: 5px;
-    font-size: 12px;
-    color: #888; /* Grey color */
-    opacity: 0.8; /* Adjust the opacity as needed (0 to 1) */
-}
-
-/* Responsive styles for smaller screens */
-@media only screen and (max-width: 600px) {
-    .file-slot {
-        width: calc(33.33% - 10px);
-    }
-}
-
-/* Responsive styles for larger screens */
-@media only screen and (min-width: 1200px) {
-    .file-slot {
-        flex: 0 0 calc(7.14% - 10px);
-    }
-}
-
-.slot-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100%;
-}
-
-button {
-    margin-top: 5px;
-    width: 50%;
-}
-
-.play-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.custom-file-label {
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f8f8f8;
-    text-align: center;
-}
-
-.selection-container {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-.normalize {
-    padding: 10px;
-}
-</style>
 

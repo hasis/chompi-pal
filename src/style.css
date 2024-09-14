@@ -1,61 +1,18 @@
+/* src/style.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
-  font-weight: 400;
-
+  font-size: 0.85em;
+  font-weight:3400;
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-.card {
-  padding: 2em;
 }
 
 #app {
@@ -65,15 +22,180 @@ button:focus-visible {
   text-align: center;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+small {
+  color: #ccc
+}
+
+select {
+  background-color: #51e517;
+  color: black
+}
+
+.file-slots-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  overflow-x: auto;
+  justify-content: center;
+}
+
+.file-slot {
+  width: 120px;
+  height: 80px;
+  margin-bottom: 10px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  /* Add rounded borders */
+  box-sizing: border-box;
+}
+
+.slot-number {
+  margin-top: 5px;
+  font-size: 12px;
+  color: #888;
+  /* Grey color */
+  opacity: 0.8;
+  /* Adjust the opacity as needed (0 to 1) */
+}
+
+/* Responsive styles for smaller screens */
+@media only screen and (max-width: 600px) {
+  .file-slot {
+    width: calc(33.33% - 10px);
   }
-  a:hover {
-    color: #747bff;
+}
+
+/* Responsive styles for larger screens */
+@media only screen and (min-width: 1200px) {
+  .file-slot {
+    flex: 0 0 calc(7.14% - 10px);
   }
-  button {
-    background-color: #f9f9f9;
+}
+
+.slot-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.play-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-file-label {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f8f8f8;
+  text-align: center;
+}
+
+.dark .custom-file-label {
+  border: 1px solid #020202;
+  background-color: #100c0c;
+}
+
+.selection-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.normalize {
+  padding: 10px;
+}
+
+#app {
+  /* font-family: Avenir, Helvetica, Arial, sans-serif; */
+  text-align: center;
+  color: #2c3e50;
+  padding-top: 0;
+}
+
+.dark #app {
+    color: #e2e8ee;
+}
+
+.dark label {
+    color: #51e517;
+}
+
+.slot-number {
+  color: #131313;
+}
+
+.dark .slot-number {
+    color: #ffffff;
+}
+
+body {
+  background: linear-gradient(to bottom, #6f019c, #f3c309, #009688);
+  margin: 0;
+  overflow: hidden;
+}
+
+.dark body {
+  background: linear-gradient(to bottom, #18131a, #383838f6, #000000);
+}
+
+#crt:before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(to bottom,
+      rgba(18, 16, 16, 0) 50%,
+      rgba(0, 0, 0, 0.25) 50%);
+  background-size: 100% 2px;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+@keyframes textShadow {
+  0% {
+    text-shadow: 0.4389924193300864px 0 1px rgba(0, 30, 255, 0.5), -0.4389924193300864px 0 1px rgba(255, 0, 80, 0.3), 0 0 3px;
+  }
+
+  5% {
+    text-shadow: 2.7928974010788217px 0 1px rgba(0, 30, 255, 0.5), -2.7928974010788217px 0 1px rgba(255, 0, 80, 0.3), 0 0 3px;
+  }
+
+  /** etc */
+}
+
+.scanline {
+  width: 100%;
+  height: 4px;
+  /* Adjust the height of the scanlines as needed */
+  z-index: 8;
+  background: linear-gradient(0deg,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(255, 255, 255, 0.2) 10%,
+      rgba(0, 0, 0, 0.1) 100%);
+  opacity: 0.5;
+  position: absolute;
+  bottom: 100%;
+  animation: scanline 5s linear infinite;
+}
+
+@keyframes scanline {
+  0% {
+    bottom: 100%;
+  }
+
+  80% {
+    bottom: 100%;
+  }
+
+  100% {
+    bottom: 0%;
   }
 }
